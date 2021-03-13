@@ -36,16 +36,16 @@ deterministic <- T    # Perform deterministic analysis? (T/F)
 npats <- 1000         # Number of simulated patients in the deterministic analysis
 
 # Probabilistic sensitivity analysis
-probabilistic <- F    # Perform probabilistic analysis?
-npats.psa <- 10     # Number of patients in the probabilistic sensitivity analysis simulations
-nloops.psa <- 5      # Number of loops in the probabilistic sensitivity analysis simulations
+probabilistic <- T    # Perform probabilistic analysis?
+npats.psa <- 200     # Number of patients in the probabilistic sensitivity analysis simulations
+nloops.psa <- 200      # Number of loops in the probabilistic sensitivity analysis simulations
 
 
 #### Define parameters ####
 # Interventions: usual care (uc), early warning system (ews), or early warning system + diagnostic algorithm (ewsda)
 # Global variables
 # Discount rates
-drly <- 0.00000001   # Discount rate for life years
+drly <- 0.015   # Discount rate for life years
 drq  <- 0.015   # Discount rate for QALYs
 drc  <- 0.040   # Discount rate for costs
 
@@ -72,6 +72,16 @@ time.outpat.visit.uc     <- 0.234           # For UC
 se.time.outpat.visit.uc  <- 0.017           # Standard error for UC
 time.outpat.visit.ews    <- 0.141           # For EWS
 se.time.outpat.visit.ews <- 0.005           # Standard error for EWS
+
+# Utilities
+utility.nyha.class.1     <- 0.87976         # Utility NYHA class I
+se.utility.nyha.class.1  <- 0.00827         # Standard error for utility NYHA class I
+utility.nyha.class.2     <- 0.71178         # Utility NYHA class II
+se.utility.nyha.class.2  <- 0.00944         # Standard error for utility NYHA class II
+utility.nyha.class.3     <- 0.61405         # Utility NYHA class III
+se.utility.nyha.class.3  <- 0.01349         # Standard error for utility NYHA class III
+utility.nyha.class.4     <- 0.49228         # Utility NYHA class IV
+se.utility.nyha.class.4  <- 0.03032         # Standard error for utility NYHA class IV
 
 # Costs
 # Event costs (per event)

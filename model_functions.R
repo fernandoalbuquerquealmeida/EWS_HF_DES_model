@@ -675,7 +675,7 @@ ReactEvt <- function(thisevt, intervention){
             thsqalys <<- thsqalys + additionals$addqalys + instadditionals$addinstqalys
             thscosts <<- thscosts + additionals$addcosts + instadditionals$addinstcosts 
             
-            utilmlt <<- ifelse(curpat$nyha.class < 4, utilmlt * parameters$umult.hosp, utilmlt)
+            utilmlt <<- max(utility.nyha.class.4, utilmlt * parameters$umult.hosp)
             
             patdies <- simulation.draws[simulation.index+2,patient.index] < p.dth.hosp   # If the random number between 0 and 1 is lower than the predicted probability of dying in hospital (p.dth.hosp), "patdies" is set to TRUE
 
@@ -737,7 +737,7 @@ ReactEvt <- function(thisevt, intervention){
             thsqalys <<- thsqalys + additionals$addqalys + instadditionals$addinstqalys
             thscosts <<- thscosts + additionals$addcosts + instadditionals$addinstcosts 
             
-            utilmlt <<- ifelse(curpat$nyha.class < 4, utilmlt * parameters$umult.hosp, utilmlt)
+            utilmlt <<- max(utility.nyha.class.4, utilmlt * parameters$umult.hosp)
             
             patdies <- simulation.draws[simulation.index+2,patient.index] < p.dth.hosp   # If the random number between 0 and 1 is lower than the predicted probability of dying in hospital (p.dth.hosp), "patdies" is set to TRUE
             
@@ -784,7 +784,7 @@ ReactEvt <- function(thisevt, intervention){
             
             thslifeyears <<- thslifeyears + additionals$addlifeyears + instadditionals$addinstlifeyears
             thsqalys <<- thsqalys + additionals$addqalys + instadditionals$addinstqalys
-            thscosts <<- thscosts + additionals$addcosts + instadditionals$addinstcosts 
+            thscosts <<- thscosts + additionals$addcosts + instadditionals$addinstcosts
             
             utilmlt <<- ifelse(curpat$nyha.class < 4, utilmlt * parameters$umult.outpat, utilmlt)
             
@@ -798,10 +798,9 @@ ReactEvt <- function(thisevt, intervention){
             
             thslifeyears <<- thslifeyears + additionals$addlifeyears + instadditionals$addinstlifeyears
             thsqalys <<- thsqalys + additionals$addqalys + instadditionals$addinstqalys
-            thscosts <<- thscosts + additionals$addcosts + instadditionals$addinstcosts 
+            thscosts <<- thscosts + additionals$addcosts + instadditionals$addinstcosts
             
             utilmlt <<- ifelse(curpat$nyha.class < 4, utilmlt * parameters$umult.outpat, utilmlt)
-            
             
         } else if (evt=="hosp"){
             if (ind.pat.data==T){
@@ -815,7 +814,7 @@ ReactEvt <- function(thisevt, intervention){
             thsqalys <<- thsqalys + additionals$addqalys + instadditionals$addinstqalys
             thscosts <<- thscosts + additionals$addcosts + instadditionals$addinstcosts 
             
-            utilmlt <<- ifelse(curpat$nyha.class < 4, utilmlt * parameters$umult.hosp, utilmlt)
+            utilmlt <<- max(utility.nyha.class.4, utilmlt * parameters$umult.hosp)
             
             patdies <- simulation.draws[simulation.index+2,patient.index] < p.dth.hosp   # If the random number between 0 and 1 is lower than the predicted probability of dying in hospital (p.dth.hosp), "patdies" is set to TRUE
             
@@ -1049,8 +1048,7 @@ RunSim <- function(deterministic, probabilistic){
                                                    sbp.ef = curpat$sbp.ef,
                                                    myocardial.infarction = curpat$myocardial.infarction,
                                                    atrial.fibrillation = curpat$chronic.atrial.fibrillation,
-                                                   hypertension = curpat$hypertension,
-                                                   utility = curpat$utility)
+                                                   hypertension = curpat$hypertension)
         }
         
         if (dbg.mode==T){
@@ -1072,12 +1070,14 @@ RunSim <- function(deterministic, probabilistic){
                              sbp.ef = curpat$sbp.ef,
                              myocardial.infarction = curpat$myocardial.infarction,
                              atrial.fibrillation = curpat$chronic.atrial.fibrillation,
-                             hypertension = curpat$hypertension,
-                             utility = curpat$utility), row.names = FALSE)
+                             hypertension = curpat$hypertension), row.names = FALSE)
         }
         
         simulation.clock <<- 0
         curtime <<- 0
+        curpat$utility <<- ifelse(curpat$nyha.class.1 == 1, utility.nyha.class.1,
+                                  ifelse(curpat$nyha.class.2 == 1, utility.nyha.class.2,
+                                         ifelse(curpat$nyha.class.3 == 1, utility.nyha.class.3, utility.nyha.class.4)))
         utilmlt <<- curpat$utility
         
         simulation.index <<- 1
@@ -1150,8 +1150,7 @@ RunSim <- function(deterministic, probabilistic){
                                                     sbp.ef = curpat$sbp.ef,
                                                     myocardial.infarction = curpat$myocardial.infarction,
                                                     atrial.fibrillation = curpat$chronic.atrial.fibrillation,
-                                                    hypertension = curpat$hypertension,
-                                                    utility = curpat$utility)
+                                                    hypertension = curpat$hypertension)
         }
         
         if (dbg.mode==T){
@@ -1173,12 +1172,14 @@ RunSim <- function(deterministic, probabilistic){
                              sbp.ef = curpat$sbp.ef,
                              myocardial.infarction = curpat$myocardial.infarction,
                              atrial.fibrillation = curpat$chronic.atrial.fibrillation,
-                             hypertension = curpat$hypertension,
-                             utility = curpat$utility), row.names = FALSE)
+                             hypertension = curpat$hypertension), row.names = FALSE)
         }
         
         simulation.clock <<- 0
         curtime <<- 0
+        curpat$utility <<- ifelse(curpat$nyha.class.1 == 1, utility.nyha.class.1,
+                                  ifelse(curpat$nyha.class.2 == 1, utility.nyha.class.2,
+                                         ifelse(curpat$nyha.class.3 == 1, utility.nyha.class.3, utility.nyha.class.4)))
         utilmlt <<- curpat$utility
         
         simulation.index <<- 1
@@ -1255,8 +1256,7 @@ RunSim <- function(deterministic, probabilistic){
                                                       sbp.ef = curpat$sbp.ef,
                                                       myocardial.infarction = curpat$myocardial.infarction,
                                                       atrial.fibrillation = curpat$chronic.atrial.fibrillation,
-                                                      hypertension = curpat$hypertension,
-                                                      utility = curpat$utility)
+                                                      hypertension = curpat$hypertension)
         }
         
         if (dbg.mode==T){
@@ -1278,12 +1278,14 @@ RunSim <- function(deterministic, probabilistic){
                              sbp.ef = curpat$sbp.ef,
                              myocardial.infarction = curpat$myocardial.infarction,
                              atrial.fibrillation = curpat$chronic.atrial.fibrillation,
-                             hypertension = curpat$hypertension,
-                             utility = curpat$utility), row.names = FALSE)
+                             hypertension = curpat$hypertension), row.names = FALSE)
         }
         
         simulation.clock <<- 0
         curtime <<- 0
+        curpat$utility <<- ifelse(curpat$nyha.class.1 == 1, utility.nyha.class.1,
+                                  ifelse(curpat$nyha.class.2 == 1, utility.nyha.class.2,
+                                         ifelse(curpat$nyha.class.3 == 1, utility.nyha.class.3, utility.nyha.class.4)))
         utilmlt <<- curpat$utility
         
         simulation.index <<- 1
@@ -1357,7 +1359,6 @@ RunSim <- function(deterministic, probabilistic){
         myocardial.infarction=rep(NA, npats),
         atrial.fibrillation=rep(NA, npats),
         hypertension=rep(NA, npats),
-        utility=rep(NA, npats),
         age.death.uc=rep(NA, npats),
         age.death.ews=rep(NA, npats),
         age.death.ewsda=rep(NA, npats),
@@ -1410,7 +1411,6 @@ RunSim <- function(deterministic, probabilistic){
         individual.patient.data[i, "myocardial.infarction"]   <- PatData[[i]]$uc$patchar$myocardial.infarction
         individual.patient.data[i, "atrial.fibrillation"]     <- PatData[[i]]$uc$patchar$atrial.fibrillation
         individual.patient.data[i, "hypertension"]            <- PatData[[i]]$uc$patchar$hypertension
-        individual.patient.data[i, "utility"]                 <- PatData[[i]]$uc$patchar$utility
         individual.patient.data[i, "age.death.uc"]            <- PatData[[i]]$uc$patchar$age+PatData[[i]]$uc$thslifeyears
         individual.patient.data[i, "age.death.ews"]           <- PatData[[i]]$uc$patchar$age+PatData[[i]]$ews$thslifeyears
         individual.patient.data[i, "age.death.ewsda"]         <- PatData[[i]]$uc$patchar$age+PatData[[i]]$ewsda$thslifeyears
@@ -1489,8 +1489,8 @@ RunSim <- function(deterministic, probabilistic){
                                sensitivity = rep(sensitivity, nloops.psa),
                                false.positive.rate = rep(false.positive.rate, nloops.psa),
                                avoid.prob = pmax(rep(0,nloops.psa), rnorm(nloops.psa, mean = avoid.prob, sd = se.avoid.prob)),
-                               umult.outpat = pmax(rep(0,nloops.psa), rnorm(nloops.psa, mean = umult.outpat, sd = se.umult.outpat)),
-                               umult.hosp = pmax(rep(0,nloops.psa), rnorm(nloops.psa, mean = umult.hosp, sd = se.umult.hosp)),
+                               umult.outpat = rep(umult.outpat,nloops.psa),
+                               umult.hosp = pmin(rep(1,nloops.psa),pmax(rep(0,nloops.psa), rnorm(nloops.psa, mean = umult.hosp, sd = se.umult.hosp))),
                                time.outpat.visit.uc = pmax(rep(0,nloops.psa), rnorm(nloops.psa, mean = time.outpat.visit.uc, sd = se.time.outpat.visit.uc)),
                                time.outpat.visit.ews = pmax(rep(0,nloops.psa), rnorm(nloops.psa, mean = time.outpat.visit.ews, sd = se.time.outpat.visit.ews)),
                                cost.outpat.uc = rgamma(nloops.psa, shape = (cost.outpat.uc/se.cost.outpat.uc)^2 , scale = se.cost.outpat.uc^2/cost.outpat.uc),
@@ -1506,6 +1506,8 @@ RunSim <- function(deterministic, probabilistic){
         
         for (j in 1:nloops.psa) {
             
+            # Draw parameters for each loop of the PSA
+            
             parameters <<- lapply(parameters.psa, function(x) x[[j]])
             
             reg.coef.death.uc  <<- as.numeric(mvtnorm::rmvnorm(1,coef(surv.death.uc),vcov(surv.death.uc)))
@@ -1515,23 +1517,26 @@ RunSim <- function(deterministic, probabilistic){
             
             reg.coef.dth.hosp  <<- as.numeric(mvtnorm::rmvnorm(1,coef(p.death.hosp),vcov(p.death.hosp)))
             
+            utility.nyha.class.1.psa <<- rbeta(1, utility.nyha.class.1*(((utility.nyha.class.1*(1-utility.nyha.class.1))/se.utility.nyha.class.1^2)-1),
+                                           (1-utility.nyha.class.1)*(((utility.nyha.class.1*(1-utility.nyha.class.1))/se.utility.nyha.class.1^2)-1))
+            utility.nyha.class.2.psa <<- rbeta(1, utility.nyha.class.2*(((utility.nyha.class.2*(1-utility.nyha.class.2))/se.utility.nyha.class.2^2)-1),
+                                           (1-utility.nyha.class.2)*(((utility.nyha.class.2*(1-utility.nyha.class.2))/se.utility.nyha.class.2^2)-1))
+            utility.nyha.class.3.psa <<- rbeta(1, utility.nyha.class.3*(((utility.nyha.class.3*(1-utility.nyha.class.3))/se.utility.nyha.class.3^2)-1),
+                                           (1-utility.nyha.class.3)*(((utility.nyha.class.3*(1-utility.nyha.class.3))/se.utility.nyha.class.3^2)-1))
+            utility.nyha.class.4.psa <<- rbeta(1, utility.nyha.class.4*(((utility.nyha.class.4*(1-utility.nyha.class.4))/se.utility.nyha.class.4^2)-1),
+                                           (1-utility.nyha.class.4)*(((utility.nyha.class.4*(1-utility.nyha.class.4))/se.utility.nyha.class.4^2)-1))
+            
             set.seed(9)
             
-            this.PSA.sim <<- list(dcosts.ews.ewsda=0,
-                                   dcosts.uc.ewsda=0,
-                                   dcosts.uc.ews=0,
-                                   dlifeyears.ews.ewsda=0,
-                                   dlifeyears.uc.ewsda=0,
-                                   dlifeyears.uc.ews=0,
-                                   dqalys.ews.ewsda=0,
-                                   dqalys.uc.ewsda=0,
-                                   dqalys.uc.ews=0,
-                                   ICER.euro.ly.ews.ewsda=0,
-                                   ICER.euro.ly.uc.ewsda=0,
-                                   ICER.euro.ly.uc.ews=0,
-                                   ICER.euro.qaly.ews.ewsda=0,
-                                   ICER.euro.qaly.uc.ewsda=0,
-                                   ICER.euro.qaly.uc.ews=0)
+            this.PSA.sim <<- list(tot.lifeyears.uc=0,
+                                  tot.qalys.uc=0,
+                                  tot.costs.uc=0,
+                                  tot.lifeyears.ews=0,
+                                  tot.qalys.ews=0,
+                                  tot.costs.ews=0,
+                                  tot.lifeyears.ewsda=0,
+                                  tot.qalys.ewsda=0,
+                                  tot.costs.ewsda=0)
         
         # Trace PSA
         cat(paste("\n## PSA loop [", j, "] ##"))
@@ -1549,19 +1554,7 @@ RunSim <- function(deterministic, probabilistic){
         tot.qalys.ewsda <<- 0 # total QALYs accrued by all patients - EWS+DA
         tot.costs.ewsda <<- 0 # total costs accrued by all patients - EWS+DA
         
-        tot.dlifeyears.uc.ews <<- 0 # difference in life years between UC and EWS
-        tot.dqalys.uc.ews <<- 0 # difference in QALYs between UC and EWS
-        tot.dcosts.uc.ews <<- 0 # difference in costs between UC and EWS
-        
-        tot.dlifeyears.uc.ewsda <<- 0 # difference in life years between UC and EWS+DA
-        tot.dqalys.uc.ewsda <<- 0 # difference in QALYs between UC and EWS+DA
-        tot.dcosts.uc.ewsda <<- 0 # difference in costs between UC and EWS+DA
-        
-        tot.dlifeyears.ews.ewsda <<- 0 # difference in life years between EWS and EWS+DA
-        tot.dqalys.ews.ewsda <<- 0 # difference in QALYs between EWS and EWS+DA
-        tot.dcosts.ews.ewsda <<- 0 # difference in costs between EWS and EWS+DA
-        
-        # Inner loop, repeat for each patient
+        # Inner loop, repeat for each patient within each PSA loop
         for (i in 1:npats.psa){
             
             patient.index <<- i
@@ -1579,7 +1572,10 @@ RunSim <- function(deterministic, probabilistic){
             
             simulation.clock <<- 0
             curtime <<- 0
-            utilmlt <<- curpat$utility
+            curpat$utility.psa <<- ifelse(curpat$nyha.class.1 == 1, utility.nyha.class.1.psa,
+                                      ifelse(curpat$nyha.class.2 == 1, utility.nyha.class.2.psa,
+                                             ifelse(curpat$nyha.class.3 == 1, utility.nyha.class.3.psa, utility.nyha.class.4.psa)))
+            utilmlt <<- curpat$utility.psa
             
             simulation.index <<- 1
             
@@ -1606,14 +1602,6 @@ RunSim <- function(deterministic, probabilistic){
             tot.qalys.uc <<- tot.qalys.uc + thsqalys
             tot.costs.uc <<- tot.costs.uc + thscosts
             
-            tot.dlifeyears.uc.ews <<- tot.dlifeyears.uc.ews - thslifeyears 
-            tot.dqalys.uc.ews <<- tot.dqalys.uc.ews - thsqalys 
-            tot.dcosts.uc.ews <<- tot.dcosts.uc.ews - thscosts
-            
-            tot.dlifeyears.uc.ewsda <<- tot.dlifeyears.uc.ewsda - thslifeyears 
-            tot.dqalys.uc.ewsda <<- tot.dqalys.uc.ewsda - thsqalys 
-            tot.dcosts.uc.ewsda <<- tot.dcosts.uc.ewsda - thscosts
-            
             # For the ews patient:
             # Reset patient characteristics, current time, and initial utility
             curpat <<- sim.pats[i,]
@@ -1623,7 +1611,10 @@ RunSim <- function(deterministic, probabilistic){
             
             simulation.clock <<- 0
             curtime <<- 0
-            utilmlt <<- curpat$utility
+            curpat$utility.psa <<- ifelse(curpat$nyha.class.1 == 1, utility.nyha.class.1.psa,
+                                      ifelse(curpat$nyha.class.2 == 1, utility.nyha.class.2.psa,
+                                             ifelse(curpat$nyha.class.3 == 1, utility.nyha.class.3.psa, utility.nyha.class.4.psa)))
+            utilmlt <<- curpat$utility.psa
             
             simulation.index <<- 1
             
@@ -1650,14 +1641,6 @@ RunSim <- function(deterministic, probabilistic){
             tot.qalys.ews <<- tot.qalys.ews + thsqalys
             tot.costs.ews <<- tot.costs.ews + thscosts
             
-            tot.dlifeyears.uc.ews <<- tot.dlifeyears.uc.ews + thslifeyears
-            tot.dqalys.uc.ews <<- tot.dqalys.uc.ews + thsqalys
-            tot.dcosts.uc.ews <<- tot.dcosts.uc.ews + thscosts
-            
-            tot.dlifeyears.ews.ewsda <<- tot.dlifeyears.ews.ewsda - thslifeyears 
-            tot.dqalys.ews.ewsda <<- tot.dqalys.ews.ewsda - thsqalys 
-            tot.dcosts.ews.ewsda <<- tot.dcosts.ews.ewsda - thscosts
-            
             # For the ewsda patient:
             # Reset patient characteristics, current time, and initial utility
             curpat <<- sim.pats[i,]
@@ -1667,7 +1650,10 @@ RunSim <- function(deterministic, probabilistic){
             
             simulation.clock <<- 0
             curtime <<- 0
-            utilmlt <<- curpat$utility
+            curpat$utility.psa <<- ifelse(curpat$nyha.class.1 == 1, utility.nyha.class.1.psa,
+                                      ifelse(curpat$nyha.class.2 == 1, utility.nyha.class.2.psa,
+                                             ifelse(curpat$nyha.class.3 == 1, utility.nyha.class.3.psa, utility.nyha.class.4.psa)))
+            utilmlt <<- curpat$utility.psa
             
             simulation.index <<- 1
             
@@ -1694,33 +1680,20 @@ RunSim <- function(deterministic, probabilistic){
             tot.qalys.ewsda <<- tot.qalys.ewsda + thsqalys
             tot.costs.ewsda <<- tot.costs.ewsda + thscosts
             
-            tot.dlifeyears.uc.ewsda <<- tot.dlifeyears.uc.ewsda + thslifeyears
-            tot.dqalys.uc.ewsda <<- tot.dqalys.uc.ewsda + thsqalys
-            tot.dcosts.uc.ewsda <<- tot.dcosts.uc.ewsda + thscosts
             
-            tot.dlifeyears.ews.ewsda <<- tot.dlifeyears.ews.ewsda + thslifeyears 
-            tot.dqalys.ews.ewsda <<- tot.dqalys.ews.ewsda + thsqalys 
-            tot.dcosts.ews.ewsda <<- tot.dcosts.ews.ewsda + thscosts
-         
-               
         }
         
         
-        this.PSA.sim$tot.lifeyears.uc <<- tot.lifeyears.uc
-        this.PSA.sim$tot.qalys.uc <<- tot.qalys.uc
-        this.PSA.sim$tot.costs.uc <<- tot.costs.uc
-        this.PSA.sim$tot.lifeyears.ews <<- tot.lifeyears.ews
-        this.PSA.sim$tot.qalys.ews <<- tot.qalys.ews
-        this.PSA.sim$tot.costs.ews <<- tot.costs.ews
-        this.PSA.sim$tot.lifeyears.ewsda <<- tot.lifeyears.ewsda
-        this.PSA.sim$tot.qalys.ewsda <<- tot.qalys.ewsda
-        this.PSA.sim$tot.costs.ewsda <<- tot.costs.ewsda
-        this.PSA.sim$ICER.euro.ly.ews.ewsda <<- tot.dcosts.ews.ewsda / tot.dlifeyears.ews.ewsda
-        this.PSA.sim$ICER.euro.ly.uc.ewsda <<- tot.dcosts.uc.ewsda / tot.dlifeyears.uc.ewsda
-        this.PSA.sim$ICER.euro.ly.uc.ews <<- tot.dcosts.uc.ews / tot.dlifeyears.uc.ews
-        this.PSA.sim$ICER.euro.qaly.ews.ewsda <<- tot.dcosts.ews.ewsda / tot.dqalys.ews.ewsda
-        this.PSA.sim$ICER.euro.qaly.uc.ewsda <<- tot.dcosts.uc.ewsda / tot.dqalys.uc.ewsda
-        this.PSA.sim$ICER.euro.qaly.uc.ews <<- tot.dcosts.uc.ews / tot.dqalys.uc.ews
+        this.PSA.sim$tot.lifeyears.uc <<- tot.lifeyears.uc/npats.psa
+        this.PSA.sim$tot.qalys.uc <<- tot.qalys.uc/npats.psa
+        this.PSA.sim$tot.costs.uc <<- tot.costs.uc/npats.psa
+        this.PSA.sim$tot.lifeyears.ews <<- tot.lifeyears.ews/npats.psa
+        this.PSA.sim$tot.qalys.ews <<- tot.qalys.ews/npats.psa
+        this.PSA.sim$tot.costs.ews <<- tot.costs.ews/npats.psa
+        this.PSA.sim$tot.lifeyears.ewsda <<- tot.lifeyears.ewsda/npats.psa
+        this.PSA.sim$tot.qalys.ewsda <<- tot.qalys.ewsda/npats.psa
+        this.PSA.sim$tot.costs.ewsda <<- tot.costs.ewsda/npats.psa
+        
         
         PSA.sim[[j]] <<- this.PSA.sim
         
@@ -1728,55 +1701,37 @@ RunSim <- function(deterministic, probabilistic){
         
         
         if (export.excel==T) {
-        
-        psa.results <- data.frame(
             
-            tot.lifeyears.uc=rep(NA, nloops.psa),
-            tot.qalys.uc=rep(NA, nloops.psa),
-            tot.costs.uc=rep(NA, nloops.psa),
-            tot.lifeyears.ews=rep(NA, nloops.psa),
-            tot.qalys.ews=rep(NA, nloops.psa),
-            tot.costs.ews=rep(NA, nloops.psa),
-            tot.lifeyears.ewsda=rep(NA, nloops.psa),
-            tot.qalys.ewsda=rep(NA, nloops.psa),
-            tot.costs.ewsda=rep(NA, nloops.psa),
-            ICER.euro.ly.ews.ewsda=rep(NA, nloops.psa),
-            ICER.euro.ly.uc.ewsda=rep(NA, nloops.psa),
-            ICER.euro.ly.uc.ews=rep(NA, nloops.psa),
-            ICER.euro.qaly.ews.ewsda=rep(NA, nloops.psa),
-            ICER.euro.qaly.uc.ewsda=rep(NA, nloops.psa),
-            ICER.euro.qaly.uc.ews=rep(NA, nloops.psa)
+            psa.results <- data.frame(
+                
+                tot.lifeyears.uc=rep(NA, nloops.psa),
+                tot.qalys.uc=rep(NA, nloops.psa),
+                tot.costs.uc=rep(NA, nloops.psa),
+                tot.lifeyears.ews=rep(NA, nloops.psa),
+                tot.qalys.ews=rep(NA, nloops.psa),
+                tot.costs.ews=rep(NA, nloops.psa),
+                tot.lifeyears.ewsda=rep(NA, nloops.psa),
+                tot.qalys.ewsda=rep(NA, nloops.psa),
+                tot.costs.ewsda=rep(NA, nloops.psa)
             )
-        
-        # Fill in with data generated from the simulation
-        for (j in 1:nloops.psa){
             
-            psa.results[j, "tot.lifeyears.uc"]       <- PSA.sim[[j]]$tot.lifeyears.uc
-            psa.results[j, "tot.qalys.uc"]       <- PSA.sim[[j]]$tot.qalys.uc
-            psa.results[j, "tot.costs.uc"]       <- PSA.sim[[j]]$tot.costs.uc
-            psa.results[j, "tot.lifeyears.ews"]       <- PSA.sim[[j]]$tot.lifeyears.ews
-            psa.results[j, "tot.qalys.ews"]       <- PSA.sim[[j]]$tot.qalys.ews
-            psa.results[j, "tot.costs.ews"]       <- PSA.sim[[j]]$tot.costs.ews
-            psa.results[j, "tot.lifeyears.ewsda"]       <- PSA.sim[[j]]$tot.lifeyears.ewsda
-            psa.results[j, "tot.qalys.ewsda"]       <- PSA.sim[[j]]$tot.qalys.ewsda
-            psa.results[j, "tot.costs.ewsda"]       <- PSA.sim[[j]]$tot.costs.ewsda
-            psa.results[j, "ICER.euro.ly.ews.ewsda"]       <- PSA.sim[[j]]$ICER.euro.ly.ews.ewsda
-            psa.results[j, "ICER.euro.ly.uc.ewsda"]       <- PSA.sim[[j]]$ICER.euro.ly.uc.ewsda
-            psa.results[j, "ICER.euro.ly.uc.ews"]       <- PSA.sim[[j]]$ICER.euro.ly.uc.ews
-            psa.results[j, "ICER.euro.qaly.ews.ewsda"]       <- PSA.sim[[j]]$ICER.euro.qaly.ews.ewsda
-            psa.results[j, "ICER.euro.qaly.uc.ewsda"]       <- PSA.sim[[j]]$ICER.euro.qaly.uc.ewsda
-            psa.results[j, "ICER.euro.qaly.uc.ews"]       <- PSA.sim[[j]]$ICER.euro.qaly.uc.ews
+            # Fill in with data generated from the simulation
+            for (j in 1:nloops.psa){
+                
+                psa.results[j, "tot.lifeyears.uc"]       <- PSA.sim[[j]]$tot.lifeyears.uc
+                psa.results[j, "tot.qalys.uc"]       <- PSA.sim[[j]]$tot.qalys.uc
+                psa.results[j, "tot.costs.uc"]       <- PSA.sim[[j]]$tot.costs.uc
+                psa.results[j, "tot.lifeyears.ews"]       <- PSA.sim[[j]]$tot.lifeyears.ews
+                psa.results[j, "tot.qalys.ews"]       <- PSA.sim[[j]]$tot.qalys.ews
+                psa.results[j, "tot.costs.ews"]       <- PSA.sim[[j]]$tot.costs.ews
+                psa.results[j, "tot.lifeyears.ewsda"]       <- PSA.sim[[j]]$tot.lifeyears.ewsda
+                psa.results[j, "tot.qalys.ewsda"]       <- PSA.sim[[j]]$tot.qalys.ewsda
+                psa.results[j, "tot.costs.ewsda"]       <- PSA.sim[[j]]$tot.costs.ewsda
+                
+            }
             
-        }
-        
-        # Calculate average of all PSA loops
-        psa.results <- rbind(psa.results, c(colSums(psa.results)/nloops.psa))
-        
-        # Create loop number column and average
-        psa.results <- data.frame(loop.number=c(1:nloops.psa, "Average"), psa.results)
-        
-        write.csv(psa.results, file = "./Results/PSA_results.csv")
-        
+            write.csv(psa.results, file = "./Results/PSA_results.csv")
+            
         }
     }
     
